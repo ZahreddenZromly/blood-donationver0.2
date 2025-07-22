@@ -39,7 +39,7 @@ class SuperAdminDashboard extends StatelessWidget {
                 top: 40,
                 left: 20,
                 child: Text(
-                  "Super Admin Dashboard",
+                  "واجهة المسؤول",
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,

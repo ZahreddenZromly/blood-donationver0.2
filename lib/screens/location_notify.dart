@@ -50,7 +50,7 @@ class _LocationAndNotifyPageState extends State<LocationAndNotifyPage> {
     } catch (e) {
       print("Location error: $e");
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Failed to get location.")),
+        const SnackBar(content: Text("فشل الحصول علي الموقع.")),
       );
     }
   }
@@ -62,7 +62,7 @@ class _LocationAndNotifyPageState extends State<LocationAndNotifyPage> {
       final currentUser = FirebaseAuth.instance.currentUser;
       if (currentUser == null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("You are not logged in.")),
+          const SnackBar(content: Text("انت ليس مسجل ")),
         );
         setState(() => _isLoading = false);
         return;
@@ -79,7 +79,7 @@ class _LocationAndNotifyPageState extends State<LocationAndNotifyPage> {
 
       if (bloodType == null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Blood type not set.")),
+          const SnackBar(content: Text("فصيلة الدم ليسة معدة")),
         );
         setState(() => _isLoading = false);
         return;
@@ -87,7 +87,7 @@ class _LocationAndNotifyPageState extends State<LocationAndNotifyPage> {
 
       if (_currentPosition == null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Location not available.")),
+          const SnackBar(content: Text("الموقع غير متاح")),
         );
         setState(() => _isLoading = false);
         return;
@@ -121,12 +121,12 @@ class _LocationAndNotifyPageState extends State<LocationAndNotifyPage> {
       }
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Notification sent to blood type $bloodType")),
+        SnackBar(content: Text("تم ارسال اشعار $bloodType")),
       );
     } catch (e) {
       print("Error sending notifications: $e");
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Failed to send notifications.")),
+        const SnackBar(content: Text("فشل الارسال")),
       );
     } finally {
       setState(() => _isLoading = false);
@@ -137,7 +137,7 @@ class _LocationAndNotifyPageState extends State<LocationAndNotifyPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Your Location"),
+        title: const Text("موقعك الحالي"),
         backgroundColor: Colors.redAccent,
       ),
       body: _currentPosition == null
@@ -197,7 +197,7 @@ class _LocationAndNotifyPageState extends State<LocationAndNotifyPage> {
                   color: Colors.white,
                 ),
               )
-                  : const Text("Send Notification to Same Blood Type"),
+                  : const Text("ارسال اشعار الي نفس فصيلة الدم"),
               onPressed: _isLoading ? null : _sendNotificationsToMatchingUsers,
             ),
           ),

@@ -21,13 +21,13 @@ class _DonationEligibilityScreenState extends State<DonationEligibilityScreen> {
       showDialog(
         context: context,
         builder: (_) => AlertDialog(
-          title: const Text("Not Eligible"),
+          title: const Text("ليس متوافق"),
           content: const Text(
-              "Based on your answers, you're currently not eligible to donate blood."),
+              "علي حسب اجاباتك السابقة انت ليس قادر لي التبرع"),
           actions: [
             TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: const Text("OK")),
+                child: const Text("نعم")),
           ],
         ),
       );

@@ -19,7 +19,7 @@ class NewsScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Latest News'),
+        title: const Text('اخر الاخبار'),
         backgroundColor: Colors.redAccent,
       ),
       body: StreamBuilder<QuerySnapshot>(
@@ -34,7 +34,7 @@ class NewsScreen extends StatelessWidget {
           }
 
           final newsList = snapshot.data!.docs;
-          if (newsList.isEmpty) return const Center(child: Text('No news yet'));
+          if (newsList.isEmpty) return const Center(child: Text('لاتوجد اخبار'));
 
           return ListView.builder(
             padding: const EdgeInsets.all(16),

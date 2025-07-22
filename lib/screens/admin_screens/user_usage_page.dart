@@ -97,7 +97,7 @@ class _UserUsagePageState extends State<UserUsagePage> {
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: const Text('Close'),
+              child: const Text('اغلاق'),
             ),
           ],
         );
@@ -109,12 +109,14 @@ class _UserUsagePageState extends State<UserUsagePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'User Usage Page',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 36,
+        title: Center(
+          child: const Text(
+            'استعمال المستخدم',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 36,
+            ),
           ),
         ),
         centerTitle: true,
@@ -129,7 +131,7 @@ class _UserUsagePageState extends State<UserUsagePage> {
               controller: _searchController,
               onChanged: (value) => _filterUsers(),
               decoration: InputDecoration(
-                labelText: 'Search Users',
+                labelText: 'البحث',
                 prefixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
@@ -140,7 +142,7 @@ class _UserUsagePageState extends State<UserUsagePage> {
             Expanded(
               child:
                   filteredUsers.isEmpty
-                      ? const Center(child: Text("No users found."))
+                      ? const Center(child: Text("لا يوجد مستخدمين"))
                       : ListView.builder(
                         itemCount: filteredUsers.length,
                         itemBuilder: (context, index) {

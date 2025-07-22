@@ -20,19 +20,19 @@ class AdminDonationRequestsScreen extends StatelessWidget {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text("Cancel Request"),
+        title: const Text("الغاء الطلب"),
         content: TextField(
           controller: reasonController,
           decoration: const InputDecoration(
-            labelText: "Reason for cancellation",
-            hintText: "Enter explanation",
+            labelText: "سبب الإلغاء",
+            hintText: "ادخل السبب",
           ),
           maxLines: 3,
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text("Cancel"),
+            child: const Text("الغاء"),
           ),
           ElevatedButton(
             onPressed: () async {
@@ -57,11 +57,11 @@ class AdminDonationRequestsScreen extends StatelessWidget {
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
-                  content: Text('Request cancelled and user notified.'),
+                  content: Text('تم الغاء الطلب واشعار المستخدم'),
                 ),
               );
             },
-            child: const Text("Confirm"),
+            child: const Text("التأكيد"),
           ),
         ],
       ),
@@ -87,7 +87,7 @@ class AdminDonationRequestsScreen extends StatelessWidget {
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Request approved and user notified.'),
+          content: Text('تم تأكيد الطلب وإشعار المستخدم'),
         ),
       );
     } catch (e) {
@@ -105,7 +105,7 @@ class AdminDonationRequestsScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Center(
           child: Text(
-            "Donation Requests",
+            "طلبات التبرع",
             style: TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
@@ -131,7 +131,7 @@ class AdminDonationRequestsScreen extends StatelessWidget {
           final docs = snapshot.data!.docs;
 
           if (docs.isEmpty) {
-            return const Center(child: Text('No donation requests found.'));
+            return const Center(child: Text('لايوجد طلبات الي الان'));
           }
 
           return ListView.builder(

@@ -33,7 +33,7 @@ class Home extends StatelessWidget {
                   Image.asset("assets/blood.png", height: 160),
                   const SizedBox(height: 10),
                   const Text(
-                    "Welcome Back!",
+                    "مرحبا بك",
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 22,
@@ -48,20 +48,22 @@ class Home extends StatelessWidget {
           const SizedBox(height: 120),
 
           // Action Buttons
-          LoginButton("Donate Blood", () {
+          LoginButton("تبرع الدم", () {
             Navigator.of(context).pushNamed('/eligibility_screen');
           }),
           const SizedBox(height: 40),
 
-          LoginButton("Request Blood", () {
+          LoginButton("طلب دم", () {
             Navigator.of(context).pushNamed('/survey');
           }),
           const SizedBox(height: 40),
-
+/*
           LoginButton("Check Donation Status", () {
             Navigator.of(context).pushNamed('/donation_status');
           }),
           const SizedBox(height: 30),
+
+ */
 
           /*
           // Learn More

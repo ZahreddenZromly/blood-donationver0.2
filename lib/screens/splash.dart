@@ -38,7 +38,7 @@ class _SplashState extends State<Splash> {
               SizedBox(
                 height: 5,
               ),
-              Text("Blood Donation App",
+              Text("تطبيق التبرع بالدم",
               style: TextStyle(fontSize: 30),
               )
             ],

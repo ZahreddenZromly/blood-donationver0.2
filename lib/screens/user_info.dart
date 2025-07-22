@@ -32,12 +32,12 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
   ];
 
   final List<String> _city = [
-    'Tripoli',
-    'Benghazi',
-    'Sabha',
-    'Yefren',
-    'khumes',
-    'Alzawyah',
+    'طرابلس',
+    'بنغازي',
+    'سبهى',
+    'يفرن',
+    'الخمس',
+    'الزاوية',
   ];
 
   Future<void> _saveProfile() async {
@@ -95,7 +95,7 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
                     ),
                     SizedBox(height: 10),
                     Text(
-                      "Please Add Your Information",
+                      "الرجاء ادخال بياناتك",
                       style: TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
@@ -137,13 +137,13 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
                 ),
 
                 // 🌟 Text Fields
-                _buildTextField(_nameController, "Name", TextInputType.text),
+                _buildTextField(_nameController, "الاسم", TextInputType.text),
                 const SizedBox(height: 16),
-                _buildTextField(_ageController, "Age", TextInputType.number),
+                _buildTextField(_ageController, "العمر", TextInputType.number),
                 const SizedBox(height: 16),
-                _buildTextField(_phoneController, "Phone", TextInputType.phone),
+                _buildTextField(_phoneController, "رقم الهاتف", TextInputType.phone),
                 const SizedBox(height: 16),
-                _buildTextField(_nationalNumController, "National Number", TextInputType.number),
+                _buildTextField(_nationalNumController, "الرقم الوطني", TextInputType.number),
                 const SizedBox(height: 16),
                 _buildDropdownBloodType(),
                 const SizedBox(height: 16),
@@ -193,7 +193,7 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
   Widget _buildDropdownBloodType() {
     return DropdownButtonFormField<String>(
       value: _selectedBloodType,
-      hint: const Text("Select Blood Type"),
+      hint: const Text("اختر فصيلة الدم"),
       onChanged: (val) => setState(() => _selectedBloodType = val),
       items: _bloodTypes
           .map((type) => DropdownMenuItem(
@@ -206,7 +206,7 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
           borderRadius: BorderRadius.circular(12),
         ),
       ),
-      validator: (value) => value == null ? "Select a blood type" : null,
+      validator: (value) => value == null ? "اختر فصيلة الدم" : null,
     );
   }
 
@@ -214,7 +214,7 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
   Widget _buildDropdownCity() {
     return DropdownButtonFormField<String>(
       value: _selectedCity,
-      hint: const Text("Select City"),
+      hint: const Text("اختر المدينة"),
       onChanged: (val) => setState(() => _selectedCity = val),
       items: _city
           .map((type) => DropdownMenuItem(
@@ -227,7 +227,7 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
           borderRadius: BorderRadius.circular(12),
         ),
       ),
-      validator: (value) => value == null ? "Select City" : null,
+      validator: (value) => value == null ? "اختر المدينة" : null,
     );
   }
 

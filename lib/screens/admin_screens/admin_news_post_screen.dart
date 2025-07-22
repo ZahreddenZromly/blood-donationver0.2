@@ -67,10 +67,10 @@ class _AdminNewsPostScreenState extends State<AdminNewsPostScreen> {
 
       if (_editingDocId == null) {
         await FirebaseFirestore.instance.collection('news').add(newsData);
-        _showSnackBar("News posted!");
+        _showSnackBar("تم النشر");
       } else {
         await FirebaseFirestore.instance.collection('news').doc(_editingDocId).update(newsData);
-        _showSnackBar("News updated!");
+        _showSnackBar("تم التحديث");
       }
 
       _clearForm();
@@ -98,18 +98,18 @@ class _AdminNewsPostScreenState extends State<AdminNewsPostScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text("Delete News"),
-        content: const Text("Are you sure you want to delete this post?"),
+        title: const Text("حذف الخبر"),
+        content: const Text("هل انت متأكد من الحذف؟"),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text("Cancel")),
-          TextButton(onPressed: () => Navigator.pop(context, true), child: const Text("Delete")),
+          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text("الغاء")),
+          TextButton(onPressed: () => Navigator.pop(context, true), child: const Text("حذف")),
         ],
       ),
     );
 
     if (confirmed == true) {
       await FirebaseFirestore.instance.collection('news').doc(docId).delete();
-      _showSnackBar("News deleted.");
+      _showSnackBar("تم الحذف");
     }
   }
 
@@ -134,10 +134,10 @@ class _AdminNewsPostScreenState extends State<AdminNewsPostScreen> {
       showDialog(
         context: context,
         builder: (_) => AlertDialog(
-          title: const Text("Liked By"),
-          content: const Text("No users have liked this post yet."),
+          title: const Text("تم الإعجاب من قبل"),
+          content: const Text("قامة بال‘جاب حتي الانلايوجد مستخدمين "),
           actions: [
-            TextButton(onPressed: () => Navigator.pop(context), child: const Text("OK")),
+            TextButton(onPressed: () => Navigator.pop(context), child: const Text("نعم")),
           ],
         ),
       );
@@ -163,7 +163,7 @@ class _AdminNewsPostScreenState extends State<AdminNewsPostScreen> {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text("Liked By"),
+        title: const Text("تم الإعجاب من قبل"),
         content: SizedBox(
           width: double.maxFinite,
           child: ListView(
@@ -253,7 +253,7 @@ class _AdminNewsPostScreenState extends State<AdminNewsPostScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Admin News", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+        title: Center(child: const Text("واجهة الأخبار", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold,color: Colors.white))),
         backgroundColor: Colors.redAccent,
       ),
       body: SingleChildScrollView(
@@ -266,15 +266,15 @@ class _AdminNewsPostScreenState extends State<AdminNewsPostScreen> {
                 children: [
                   TextFormField(
                     controller: _titleController,
-                    decoration: const InputDecoration(labelText: 'Title'),
-                    validator: (val) => val == null || val.isEmpty ? 'Enter a title' : null,
+                    decoration: const InputDecoration(labelText: 'العنوان'),
+                    validator: (val) => val == null || val.isEmpty ? 'ادخل عنوان' : null,
                   ),
                   const SizedBox(height: 12),
                   TextFormField(
                     controller: _descriptionController,
                     maxLines: 3,
-                    decoration: const InputDecoration(labelText: 'Description'),
-                    validator: (val) => val == null || val.isEmpty ? 'Enter a description' : null,
+                    decoration: const InputDecoration(labelText: 'الوصف'),
+                    validator: (val) => val == null || val.isEmpty ? 'ادخل الوصف' : null,
                   ),
                   const SizedBox(height: 12),
                   Row(
@@ -282,13 +282,13 @@ class _AdminNewsPostScreenState extends State<AdminNewsPostScreen> {
                       ElevatedButton.icon(
                         onPressed: _pickImage,
                         icon: const Icon(Icons.image),
-                        label: const Text("Choose Image"),
+                        label: const Text("اختر صورة"),
                       ),
                       const SizedBox(width: 10),
                       if (_selectedImage != null)
                         Image.file(_selectedImage!, width: 50, height: 50, fit: BoxFit.cover)
                       else
-                        const Text("No image selected"),
+                        const Text("لم تقم بإختيار صورة"),
                     ],
                   ),
                   const SizedBox(height: 20),
@@ -297,13 +297,13 @@ class _AdminNewsPostScreenState extends State<AdminNewsPostScreen> {
                     style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
                     child: _isLoading
                         ? const CircularProgressIndicator(color: Colors.white)
-                        : Text(_editingDocId == null ? "Post News" : "Update News"),
+                        : Text(_editingDocId == null ? "نشر الخبر" : "تعديل الخبر"),
                   ),
                 ],
               ),
             ),
             const Divider(height: 40),
-            const Text("Your News Posts", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const Text("اخبارك المنشرة", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 10),
             StreamBuilder<QuerySnapshot>(
               stream: FirebaseFirestore.instance
@@ -315,7 +315,7 @@ class _AdminNewsPostScreenState extends State<AdminNewsPostScreen> {
                   return const CircularProgressIndicator();
                 }
                 if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                  return const Text("No news posts available.");
+                  return const Text("لا توجد اخبار الان");
                 }
 
                 return ListView(

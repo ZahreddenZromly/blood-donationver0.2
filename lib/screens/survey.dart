@@ -95,7 +95,7 @@ class _SurveyState extends State<Survey> {
               ),
               const SizedBox(height: 10),
               const Text(
-                "Please Pick Your\n      Blood Type",
+                "الرجاء اختيار فصيلة الدم",
                 style: TextStyle(fontSize: 30),
               ),
               const SizedBox(height: 10),
@@ -105,14 +105,14 @@ class _SurveyState extends State<Survey> {
               const SizedBox(height: 15),
               signRow(),
               const SizedBox(height: 20),
-              LoginButton("Finish", finishSurvey),
+              LoginButton("انهاء", finishSurvey),
               const SizedBox(height: 10),
               GestureDetector(
                 onTap: () {
                   Navigator.of(context).pushNamed('/booking');
                 },
                 child: const Text(
-                  "Book Now",
+                  "الطلب",
                   style: TextStyle(color: Colors.redAccent, fontSize: 15),
                 ),
               )

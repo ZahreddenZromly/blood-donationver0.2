@@ -83,7 +83,7 @@ class _AdminMainDashboardPageState extends State<AdminMainDashboardPage> {
       appBar: AppBar(
         title: Center(
           child: const Text(
-            "Dashboard",
+            "لوحة التحكم",
             style: TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
@@ -101,32 +101,32 @@ class _AdminMainDashboardPageState extends State<AdminMainDashboardPage> {
                 child: Column(
                   children: [
                     dashboardCard(
-                      "Total Donors",
+                      "اجمالي المتبرعين",
                       totalUsers,
                       Icons.people,
                       Colors.blue,
                     ),
                     dashboardCard(
-                      "Blood Types",
+                      "فصائل الدم",
                       uniqueBloodTypes,
                       Icons.water_drop,
                       Colors.red,
                     ),
                     dashboardCard(
-                      "Unique Cities",
+                      "المدن",
                       uniqueCities,
                       Icons.location_city,
                       Colors.green,
                     ),
                     dashboardCard(
-                      "Total Donations",
+                      "اجمالي التبرعات",
                       totalDonations,
                       Icons.volunteer_activism,
                       Colors.deepPurple,
                     ),
                     const SizedBox(height: 30),
                     const Text(
-                      'Dashboard Summary (Chart)',
+                      'الرسم البياني',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -160,10 +160,10 @@ class _AdminMainDashboardPageState extends State<AdminMainDashboardPage> {
                                   TitleMeta meta,
                                 ) {
                                   const labels = [
-                                    'Donors',
-                                    'Blood Types',
-                                    'Cities',
-                                    'Donations',
+                                    'المتبرعون',
+                                    'فصائل الدم',
+                                    'المدن',
+                                    'التبرعات',
                                   ];
                                   return SideTitleWidget(
                                     axisSide: meta.axisSide,
@@ -195,7 +195,7 @@ class _AdminMainDashboardPageState extends State<AdminMainDashboardPage> {
                     ),
                     const SizedBox(height: 30),
                     const Text(
-                      'Blood Type Distribution',
+                      'سجل فصائل الدم',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -248,7 +248,7 @@ class _AdminMainDashboardPageState extends State<AdminMainDashboardPage> {
                     ),
                     const SizedBox(height: 30),
                     const Text(
-                      'Donation Trend (Mock Data)',
+                      'الأكتر تبرعا',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,

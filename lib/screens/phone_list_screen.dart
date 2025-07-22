@@ -101,7 +101,7 @@ class _PhoneListScreenState extends State<PhoneListScreen> {
         }
 
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Request sent to donors with matching blood type')),
+          const SnackBar(content: Text('تم ارسال الطلب الي المستخدمين المطابقة فصيلتهم')),
         );
       }
     }
@@ -117,7 +117,7 @@ class _PhoneListScreenState extends State<PhoneListScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Available Donors"),
+        title: const Text("المتبرعين الموجودون"),
         backgroundColor: Colors.redAccent,
       ),
       body: StreamBuilder<QuerySnapshot>(
@@ -137,7 +137,7 @@ class _PhoneListScreenState extends State<PhoneListScreen> {
           final users = snapshot.data!.docs;
 
           if (users.isEmpty) {
-            return const Center(child: Text("No donors available"));
+            return const Center(child: Text("لا يوجد متبرعون"));
           }
 
           return Column(

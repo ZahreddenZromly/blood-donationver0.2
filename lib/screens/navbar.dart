@@ -69,19 +69,19 @@ class _NavBarState extends State<NavBar> {
                   ),
                   GButton(
                     icon: Icons.people,
-                    text: 'Users',
+                    text: 'المستخدمين',
                   ),
                   GButton(
                     icon: Icons.schedule_outlined,
-                    text: 'Requests',
+                    text: 'الطلبات',
                   ),
                   GButton(
                     icon: Icons.admin_panel_settings,
-                    text: 'Settings',
+                    text: 'الاعدادات',
                   ),
                   GButton(
                     icon: Icons.newspaper,
-                    text: 'News',
+                    text: 'الاخبار',
                   ),
                 ],
                 selectedIndex: _selectedIndex,

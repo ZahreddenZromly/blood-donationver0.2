@@ -12,12 +12,12 @@ class NotificationScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Notifications"),
+        title: const Text("الاشعارات"),
         backgroundColor: Colors.redAccent,
         actions: [
           IconButton(
             icon: const Icon(Icons.clear_all),
-            tooltip: 'Mark All as Read',
+            tooltip: 'جعل الكل كمقروئة',
             onPressed: () async {
               final snapshots = await FirebaseFirestore.instance
                   .collection('notifications')
@@ -33,7 +33,7 @@ class NotificationScreen extends StatelessWidget {
               await batch.commit();
 
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('All notifications marked as read')),
+                const SnackBar(content: Text('جميع الاشعارات مقروئة')),
               );
             },
           ),
@@ -55,7 +55,7 @@ class NotificationScreen extends StatelessWidget {
           }
 
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return const Center(child: Text('No notifications available'));
+            return const Center(child: Text('لاتوجد اشعارات حاليا'));
           }
 
           final notifications = snapshot.data!.docs;
@@ -86,11 +86,11 @@ class NotificationScreen extends StatelessWidget {
                   return await showDialog(
                     context: context,
                     builder: (ctx) => AlertDialog(
-                      title: const Text("Delete Notification"),
-                      content: const Text("Are you sure you want to delete this notification?"),
+                      title: const Text("حذف الاشعار"),
+                      content: const Text("هل انت متأكد من حذف الاشعار؟"),
                       actions: [
-                        TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: const Text("Cancel")),
-                        TextButton(onPressed: () => Navigator.of(ctx).pop(true), child: const Text("Delete")),
+                        TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: const Text("الغاء")),
+                        TextButton(onPressed: () => Navigator.of(ctx).pop(true), child: const Text("حذف")),
                       ],
                     ),
                   );
@@ -102,7 +102,7 @@ class NotificationScreen extends StatelessWidget {
                       .delete();
 
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Notification deleted")),
+                    const SnackBar(content: Text("تم حذف الاشعار")),
                   );
                 },
                 child: InkWell(
@@ -180,7 +180,7 @@ class NotificationScreen extends StatelessWidget {
                                   }
                                 },
                                 icon: const Icon(Icons.map),
-                                label: const Text('View on Map'),
+                                label: const Text('العرض في الخريطة'),
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.redAccent,
                                   foregroundColor: Colors.white,

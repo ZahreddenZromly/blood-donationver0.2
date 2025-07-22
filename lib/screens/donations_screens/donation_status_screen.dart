@@ -41,20 +41,20 @@ class _DonationStatusScreenState extends State<DonationStatusScreen> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text('Confirm Cancellation'),
-            content: const Text('Are you sure you want to cancel your donation request?'),
+            title: const Text('تأكيد الإلغاء'),
+            content: const Text('هل انت متأكد من الغاء الطلب؟'),
             actions: [
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop(true); // User confirmed cancellation
                 },
-                child: const Text('Yes'),
+                child: const Text('نعم'),
               ),
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop(false); // User canceled the action
                 },
-                child: const Text('No'),
+                child: const Text('لا'),
               ),
             ],
           );

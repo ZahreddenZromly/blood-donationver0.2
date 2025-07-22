@@ -33,7 +33,7 @@ class _AdminPageState extends State<AdminPage> {
 
     if (email.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter email and password')),
+        const SnackBar(content: Text('الرجاء ادخال البريد و كلمة السر')),
       );
       return;
     }
@@ -54,7 +54,7 @@ class _AdminPageState extends State<AdminPage> {
       _passwordController.clear();
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Admin registered successfully')),
+        const SnackBar(content: Text('تم تسجيل المسؤول بنجاح')),
       );
     } catch (e) {
       ScaffoldMessenger.of(
@@ -79,7 +79,7 @@ class _AdminPageState extends State<AdminPage> {
   Future<void> _deleteAdmin(String uid) async {
     if (uid == currentUserId) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("You can't delete your own account")),
+        const SnackBar(content: Text("لا يمكن ان تقوم بحذف بريدك الخاص")),
       );
       return;
     }
@@ -95,15 +95,15 @@ class _AdminPageState extends State<AdminPage> {
       context: context,
       builder:
           (_) => AlertDialog(
-            title: const Text('Edit Admin'),
+            title: const Text('التعديل علي المسؤول'),
             content: TextField(
               controller: _emailEditController,
-              decoration: const InputDecoration(labelText: 'Email'),
+              decoration: const InputDecoration(labelText: 'البريد'),
             ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: const Text('Cancel'),
+                child: const Text('الغاء'),
               ),
               ElevatedButton(
                 onPressed: () async {
@@ -112,10 +112,10 @@ class _AdminPageState extends State<AdminPage> {
                   });
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Admin updated')),
+                    const SnackBar(content: Text('تم التعديل')),
                   );
                 },
-                child: const Text('Save'),
+                child: const Text('حفظ'),
               ),
             ],
           ),
@@ -128,7 +128,7 @@ class _AdminPageState extends State<AdminPage> {
       appBar: AppBar(
         title: Center(
           child: const Text(
-            'Admin Management',
+            'إدارة المسؤولون',
             style: TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
@@ -139,7 +139,7 @@ class _AdminPageState extends State<AdminPage> {
         actions: [
           IconButton(
             icon: const Icon(Icons.logout, color: Colors.white),
-            tooltip: 'Logout',
+            tooltip: 'تسجيل الخروج',
             onPressed: _logout,
           ),
         ],
@@ -152,14 +152,14 @@ class _AdminPageState extends State<AdminPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                'Register New Admin',
+                'تسجيل مسؤول جديد',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 10),
               TextField(
                 controller: _emailController,
                 decoration: const InputDecoration(
-                  labelText: 'Admin Email',
+                  labelText: 'بريد المسؤول',
                   border: OutlineInputBorder(),
                 ),
               ),
@@ -168,20 +168,20 @@ class _AdminPageState extends State<AdminPage> {
                 controller: _passwordController,
                 obscureText: true,
                 decoration: const InputDecoration(
-                  labelText: 'Password',
+                  labelText: 'كلمة المرور',
                   border: OutlineInputBorder(),
                 ),
               ),
               const SizedBox(height: 10),
               ElevatedButton(
                 onPressed: _registerAdmin,
-                child: const Text('Register Admin'),
+                child: const Text('تسجيل المسؤول'),
               ),
               const SizedBox(height: 20),
               const Divider(),
               const SizedBox(height: 10),
               const Text(
-                'Admin List',
+                'قائمة المسؤولون',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 10),
@@ -199,7 +199,7 @@ class _AdminPageState extends State<AdminPage> {
                   final admins = snapshot.data!.docs;
 
                   if (admins.isEmpty) {
-                    return const Text('No admins found.');
+                    return const Text('المسؤول غير موجود');
                   }
 
                   return ListView.builder(

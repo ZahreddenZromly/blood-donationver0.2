@@ -158,7 +158,7 @@ class _MapScreenState extends State<MapScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Blood Bank Directions'),
+        title: const Text('الاتجاه الي مصرف الدم'),
         backgroundColor: Colors.redAccent,
         actions: [
           if (_currentPosition != null)
@@ -265,7 +265,7 @@ class _MapScreenState extends State<MapScreen> {
                                 _selectedMarker!,
                               ),
                           icon: const Icon(Icons.directions),
-                          label: const Text("Get Directions"),
+                          label: const Text("الحصول علي الاتجاهات"),
                         ),
                         ElevatedButton.icon(
                           style: ElevatedButton.styleFrom(
@@ -274,7 +274,7 @@ class _MapScreenState extends State<MapScreen> {
                           ),
                           onPressed: _selectNearestBloodBank,
                           icon: const Icon(Icons.near_me),
-                          label: const Text("Nearest Bank"),
+                          label: const Text("اقرب مصرف دم"),
                         ),
                       ],
                     ),

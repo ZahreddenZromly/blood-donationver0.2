@@ -27,12 +27,12 @@ class _UserNavBarState extends State<UserNavBar> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Confirm Logout'),
-        content: const Text('Are you sure you want to logout?'),
+        title: const Text('تأكيد الخروج'),
+        content: const Text('هل انت متأكد من الخروج؟'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+            child: const Text('الغاء'),
           ),
           TextButton(
             onPressed: () async {
@@ -47,7 +47,7 @@ class _UserNavBarState extends State<UserNavBar> {
                 Navigator.pushReplacementNamed(context, '/login');
               }
             },
-            child: const Text('Logout', style: TextStyle(color: Colors.red)),
+            child: const Text('تسجيل الخروج', style: TextStyle(color: Colors.red)),
           ),
         ],
       ),
@@ -83,10 +83,10 @@ class _UserNavBarState extends State<UserNavBar> {
               selectedIndex: _selectedIndex,
               onTabChange: _onTabChange,
               tabs: const [
-                GButton(icon: Icons.home, text: 'Home'),
-                GButton(icon: Icons.notifications, text: 'Notifications'),
-                GButton(icon: Icons.newspaper, text: 'News'),
-                GButton(icon: Icons.logout, text: 'Logout'),
+                GButton(icon: Icons.home, text: 'الرئيسية'),
+                GButton(icon: Icons.notifications, text: 'الاشعارات'),
+                GButton(icon: Icons.newspaper, text: 'الاخبار'),
+                GButton(icon: Icons.logout, text: 'تسجيل الخروج'),
               ],
             ),
           ),

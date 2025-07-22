@@ -26,12 +26,12 @@ class _DonorPageState extends State<DonorPage> {
 
       await _firestore.collection('donation_requests').add(requestData);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Donation request sent successfully!')),
+        const SnackBar(content: Text('تم ارسال تبرع الدم بنجاح!')),
       );
     } catch (e) {
       print('Error sending request: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to send request')),
+        const SnackBar(content: Text('فشل ارسال الطلب')),
       );
     }
   }
@@ -40,7 +40,7 @@ class _DonorPageState extends State<DonorPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Blood Donation Request'),
+        title: const Text('طلب التبرع بالدم'),
         backgroundColor: Colors.teal,
       ),
       body: Padding(
@@ -50,15 +50,15 @@ class _DonorPageState extends State<DonorPage> {
             TextField(
               controller: _bloodTypeController,
               decoration: const InputDecoration(
-                labelText: 'Blood Type',
-                hintText: 'Enter your blood type (e.g., O+, A-)',
+                labelText: 'فصيلة الدم',
+                hintText: 'ادخل فصيلة دمك (e.g., O+, A-)',
                 border: OutlineInputBorder(),
               ),
             ),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: _sendDonationRequest,
-              child: const Text('Send Donation Request'),
+              child: const Text('ارسال طلب التبرع'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.teal,
                 padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 12),

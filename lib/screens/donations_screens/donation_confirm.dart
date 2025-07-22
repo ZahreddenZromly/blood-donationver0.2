@@ -23,7 +23,7 @@ class DonationConfirmationScreen extends StatelessWidget {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text("Request Submitted"),
+        title: const Text("تم تأكيد الطلب"),
         content: const Text(
             "Thank you! Your donation request has been submitted.\nPlease wait for confirmation."),
         actions: [
@@ -31,7 +31,7 @@ class DonationConfirmationScreen extends StatelessWidget {
             onPressed: () {
               Navigator.popUntil(context, ModalRoute.withName('/'));
             },
-            child: const Text("OK"),
+            child: const Text("نعم"),
           ),
         ],
       ),
@@ -43,7 +43,7 @@ class DonationConfirmationScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.red[50],
       appBar: AppBar(
-        title: const Text("Confirm Donation"),
+        title: const Text("تأكيد الطلب"),
         backgroundColor: Colors.redAccent,
         elevation: 0,
       ),
@@ -66,13 +66,13 @@ class DonationConfirmationScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
                 const Text(
-                  "You're Almost There!",
+                  "انت قريب !!",
                   style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 16),
                 const Text(
-                  "Your information is saved.\nPress the button below to confirm your donation request.",
+                  "بياناتك في أمان.\nاظغط علي الزر للتأكيد.",
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 16),
                 ),
@@ -82,7 +82,7 @@ class DonationConfirmationScreen extends StatelessWidget {
                   child: ElevatedButton.icon(
                     icon: const Icon(Icons.check_circle),
                     label: const Text(
-                      "Confirm Donation",
+                      "تأكيد الطلب",
                       style: TextStyle(fontSize: 16),
                     ),
                     onPressed: () => submitDonationRequest(context),

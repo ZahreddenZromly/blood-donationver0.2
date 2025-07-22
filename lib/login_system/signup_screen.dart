@@ -28,7 +28,7 @@ class _RegisterPageState extends State<RegisterPage> {
     if (passwordController.text != confirmPasswordController.text) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text("Passwords do not match"),
+          content: Text("كلمة المرور ليست متطابقة"),
           backgroundColor: Colors.red,
         ),
       );
@@ -78,7 +78,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 const SizedBox(height: 50),
                 // Create account message
                 const Text(
-                  'Lets create an account for you!',
+                  'لنقم بتسجيل دخولك',
                   style: TextStyle(
                     fontSize: 16,
                   ),
@@ -87,7 +87,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 // Email text field
                 MyTextFeild(
                   controller: emailController,
-                  hintText: 'Email',
+                  hintText: 'البريد',
                   obscureText: false,
                 ),
                 const SizedBox(height: 10),
@@ -95,7 +95,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 // Password text field
                 MyTextFeild(
                   controller: passwordController,
-                  hintText: 'Password',
+                  hintText: 'كلمة المرور',
                   obscureText: true,
                 ),
 
@@ -104,7 +104,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 // Confirm password
                 MyTextFeild(
                   controller: confirmPasswordController,
-                  hintText: 'Confirm password',
+                  hintText: 'تأكيد كلمة المرور',
                   obscureText: true,
                 ),
 
@@ -120,12 +120,12 @@ class _RegisterPageState extends State<RegisterPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text('Already a member?'),
+                    const Text('لديك بريد بالفعل؟'),
                     const SizedBox(width: 4),
                     GestureDetector(
                       onTap: widget.onTap,
                       child: const Text(
-                        'LogIn Now',
+                        'تجيل الدخول',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.blue,

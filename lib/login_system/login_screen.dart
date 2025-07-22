@@ -80,14 +80,17 @@ class _LoginPageState extends State<LoginPage> {
                   const SizedBox(height: 20),
 
                   const Text(
-                    'Welcome Back!',
+                    'مرحبا بك',
                     style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 8),
+                  /*
                   const Text(
                     'You\'ve been missed',
                     style: TextStyle(fontSize: 16, color: Colors.black54),
                   ),
+
+                   */
                   const SizedBox(height: 30),
 
                   // Email
@@ -95,12 +98,12 @@ class _LoginPageState extends State<LoginPage> {
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
                     decoration: const InputDecoration(
-                      labelText: "Email",
+                      labelText: "البريد",
                       border: OutlineInputBorder(),
                     ),
                     validator: (value) {
-                      if (value == null || value.isEmpty) return 'Email is required';
-                      if (!RegExp(r'\S+@\S+\.\S+').hasMatch(value)) return 'Enter a valid email';
+                      if (value == null || value.isEmpty) return 'البريد الزامي';
+                      if (!RegExp(r'\S+@\S+\.\S+').hasMatch(value)) return 'ادخل بريد موثوق';
                       return null;
                     },
                   ),
@@ -111,11 +114,11 @@ class _LoginPageState extends State<LoginPage> {
                     controller: _passwordController,
                     obscureText: true,
                     decoration: const InputDecoration(
-                      labelText: "Password",
+                      labelText: "كلمة المرور",
                       border: OutlineInputBorder(),
                     ),
                     validator: (value) {
-                      if (value == null || value.isEmpty) return 'Password is required';
+                      if (value == null || value.isEmpty) return 'كلمة المرور ضرورية';
                       return null;
                     },
                   ),
@@ -136,7 +139,7 @@ class _LoginPageState extends State<LoginPage> {
                       ? const CircularProgressIndicator()
                       : MyButton(
                     onTap: _signIn,
-                    text: 'Login',
+                    text: 'تسجيل الدخول',
                   ),
 
                   const SizedBox(height: 30),
@@ -144,12 +147,12 @@ class _LoginPageState extends State<LoginPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text('Not a member?'),
+                      const Text('ليس لديك بريد؟'),
                       const SizedBox(width: 4),
                       GestureDetector(
                         onTap: widget.onTap,
                         child: const Text(
-                          'Sign Up Now',
+                          'قم بالتسجيل الان',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Colors.blue,

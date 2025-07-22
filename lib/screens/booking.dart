@@ -39,7 +39,7 @@ class _BookingState extends State<Booking> {
               ),
               const SizedBox(height: 25),
               const Text(
-                "       Blood Bank\nLocation Near You",
+                "       مصرف الدم\nالموقع القريب لك",
                 style: TextStyle(fontSize: 25),
               ),
               const SizedBox(height: 20),
