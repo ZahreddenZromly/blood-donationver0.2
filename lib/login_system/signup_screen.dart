@@ -53,10 +53,6 @@ class _RegisterPageState extends State<RegisterPage> {
     }
   }
 
-
-
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -68,12 +64,12 @@ class _RegisterPageState extends State<RegisterPage> {
             padding: const EdgeInsets.symmetric(horizontal: 25.0),
             child: Column(
               children: [
-                const SizedBox(height: 50),
+                const SizedBox(height: 120),
                 // Logo
                 Icon(
                   Icons.lock,
                   size: 100,
-                  color: Colors.teal[800],
+                  color: Colors.redAccent,
                 ),
                 const SizedBox(height: 50),
                 // Create account message
@@ -125,7 +121,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     GestureDetector(
                       onTap: widget.onTap,
                       child: const Text(
-                        'تجيل الدخول',
+                        'تسجيل الدخول',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.blue,

@@ -1,3 +1,4 @@
+import 'package:blood_donation/screens/user_nav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -61,7 +62,7 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
 
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const Home()),
+        MaterialPageRoute(builder: (context) => const UserNavBar()),
       );
     }
   }
