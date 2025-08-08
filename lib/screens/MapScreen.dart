@@ -1,7 +1,7 @@
 import 'dart:convert';
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_tile_provider.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:http/http.dart' as http;
@@ -21,11 +21,10 @@ class _MapScreenState extends State<MapScreen> {
   List<LatLng> _route = [];
   bool _isLoading = false;
 
-  // List of blood bank locations (replace with your actual data)
   final List<LatLng> _bloodBanks = [
-    const LatLng(32.8925, 13.1708), // Example blood bank 1
-    const LatLng(32.8950, 13.2350), // Example blood bank 2
-    const LatLng(32.9100, 13.2400), // Example blood bank 3
+    const LatLng(32.8925, 13.1708),
+    const LatLng(32.8950, 13.2350),
+    const LatLng(32.9100, 13.2400),
   ];
 
   final MapController _mapController = MapController();
@@ -43,16 +42,26 @@ class _MapScreenState extends State<MapScreen> {
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
         await Geolocator.openLocationSettings();
+        _showError("Please enable location services.");
+        setState(() => _isLoading = false);
         return;
       }
 
       LocationPermission permission = await Geolocator.checkPermission();
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
-        if (permission == LocationPermission.denied) return;
+        if (permission == LocationPermission.denied) {
+          _showError("Location permission denied.");
+          setState(() => _isLoading = false);
+          return;
+        }
       }
 
-      if (permission == LocationPermission.deniedForever) return;
+      if (permission == LocationPermission.deniedForever) {
+        _showError("Location permissions are permanently denied.");
+        setState(() => _isLoading = false);
+        return;
+      }
 
       Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
@@ -64,9 +73,7 @@ class _MapScreenState extends State<MapScreen> {
 
       _mapController.move(_currentPosition!, 13.0);
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Failed to get current location")),
-      );
+      _showError("Failed to get current location: $e");
     } finally {
       setState(() => _isLoading = false);
     }
@@ -76,59 +83,66 @@ class _MapScreenState extends State<MapScreen> {
     setState(() {
       _isLoading = true;
       _directions = "Calculating route...";
+      _route = [];
     });
 
     try {
-      final response = await http.get(
-        Uri.parse(
+      final url = Uri.parse(
           'https://router.project-osrm.org/route/v1/driving/'
-          '${origin.longitude},${origin.latitude};'
-          '${destination.longitude},${destination.latitude}?overview=full&steps=true',
-        ),
-      );
+              '${origin.longitude},${origin.latitude};'
+              '${destination.longitude},${destination.latitude}'
+              '?overview=full&steps=true&geometries=geojson');
+
+      final response = await http.get(url);
+
+      if (response.statusCode != 200) {
+        _showError("OSRM API error: HTTP ${response.statusCode}");
+        setState(() {
+          _directions = "Failed to get directions.";
+          _route = [];
+          _isLoading = false;
+        });
+        return;
+      }
 
       final data = json.decode(response.body);
 
-      if (data['routes'] != null && data['routes'].isNotEmpty) {
-        final route = data['routes'][0];
-        final legs = route['legs'][0];
-        final steps = legs['steps'];
-
-        // Extract route coordinates
-        final coordinates = route['geometry']['coordinates'];
-        setState(() {
-          _route =
-              coordinates
-                  .map((coord) => LatLng(coord[1], coord[0]))
-                  .cast<LatLng>()
-                  .toList();
-        });
-
-        // Build directions text
-        final directions = steps
-            .map<String>((step) {
-              return step['maneuver']['instruction'] ?? 'Continue';
-            })
-            .join('\n\n');
-
-        setState(() {
-          _directions = "Route to Blood Bank:\n\n$directions";
-        });
-
-        // Zoom to fit both points
-        _mapController.fitBounds(
-          LatLngBounds.fromPoints([origin, destination]),
-          options: const FitBoundsOptions(padding: EdgeInsets.all(50)),
-        );
-      } else {
+      if (data['routes'] == null || data['routes'].isEmpty) {
         setState(() {
           _directions = "No route found between these points";
           _route = [];
+          _isLoading = false;
         });
+        return;
       }
+
+      final route = data['routes'][0];
+      final legs = route['legs'][0];
+      final steps = legs['steps'] as List<dynamic>;
+
+      final geometry = route['geometry']['coordinates'] as List<dynamic>;
+
+      setState(() {
+        _route = geometry
+            .map<LatLng>((coord) => LatLng(coord[1], coord[0]))
+            .toList();
+      });
+
+      final directionsText = steps
+          .map<String>((step) => step['maneuver']['instruction']?.toString() ?? 'Continue')
+          .join('\n\n');
+
+      setState(() {
+        _directions = "Route to Blood Bank:\n\n$directionsText";
+      });
+
+      _mapController.fitBounds(
+        LatLngBounds.fromPoints([origin, destination]),
+        options: const FitBoundsOptions(padding: EdgeInsets.all(50)),
+      );
     } catch (e) {
       setState(() {
-        _directions = "Error getting directions: ${e.toString()}";
+        _directions = "Error getting directions: $e";
         _route = [];
       });
     } finally {
@@ -137,9 +151,11 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   void _selectNearestBloodBank() {
-    if (_currentPosition == null) return;
+    if (_currentPosition == null) {
+      _showError("Current location is not determined yet.");
+      return;
+    }
 
-    // Find nearest blood bank using proper LatLng comparison
     LatLng nearest = _bloodBanks.reduce((a, b) {
       final distanceA = _distanceCalculator(_currentPosition!, a);
       final distanceB = _distanceCalculator(_currentPosition!, b);
@@ -150,8 +166,13 @@ class _MapScreenState extends State<MapScreen> {
       _selectedMarker = nearest;
     });
 
-    // Get directions automatically
     _getDirections(_currentPosition!, nearest);
+  }
+
+  void _showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
   }
 
   @override
@@ -187,9 +208,8 @@ class _MapScreenState extends State<MapScreen> {
             ),
             children: [
               TileLayer(
-                urlTemplate:
-                    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                subdomains: const ['a', 'b', 'c'],
+                urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                tileProvider: CancellableNetworkTileProvider(),
               ),
               MarkerLayer(
                 markers: [
@@ -205,7 +225,7 @@ class _MapScreenState extends State<MapScreen> {
                       ),
                     ),
                   ..._bloodBanks.map(
-                    (bank) => Marker(
+                        (bank) => Marker(
                       point: bank,
                       width: 40,
                       height: 40,
@@ -259,11 +279,7 @@ class _MapScreenState extends State<MapScreen> {
                             backgroundColor: Colors.redAccent,
                             foregroundColor: Colors.white,
                           ),
-                          onPressed:
-                              () => _getDirections(
-                                _currentPosition!,
-                                _selectedMarker!,
-                              ),
+                          onPressed: () => _getDirections(_currentPosition!, _selectedMarker!),
                           icon: const Icon(Icons.directions),
                           label: const Text("الحصول علي الاتجاهات"),
                         ),

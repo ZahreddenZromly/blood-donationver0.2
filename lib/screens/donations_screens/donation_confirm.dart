@@ -25,7 +25,7 @@ class DonationConfirmationScreen extends StatelessWidget {
       builder: (_) => AlertDialog(
         title: const Text("تم تأكيد الطلب"),
         content: const Text(
-            "Thank you! Your donation request has been submitted.\nPlease wait for confirmation."),
+            "شكرا لك . طلب التبرع تم بنجاح\n الرجاء انتظار الرد"),
         actions: [
           TextButton(
             onPressed: () {

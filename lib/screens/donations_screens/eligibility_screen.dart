@@ -23,7 +23,7 @@ class _DonationEligibilityScreenState extends State<DonationEligibilityScreen> {
         builder: (_) => AlertDialog(
           title: const Text("ليس متوافق"),
           content: const Text(
-              "علي حسب اجاباتك السابقة انت ليس قادر لي التبرع"),
+              "علي حسب اجاباتك السابقة انت ليس قادر بالتبرع"),
           actions: [
             TextButton(
                 onPressed: () => Navigator.pop(context),
@@ -57,7 +57,7 @@ class _DonationEligibilityScreenState extends State<DonationEligibilityScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Eligibility Check"),
+        title: const Text("التحقق من صحتك"),
         backgroundColor: Colors.redAccent,
         elevation: 0,
       ),
@@ -71,7 +71,7 @@ class _DonationEligibilityScreenState extends State<DonationEligibilityScreen> {
               borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
             ),
             child: const Text(
-              "Answer the following questions to check your eligibility to donate blood.",
+              "الرجاء الاجابة علي الاسئلة الاتية لكي نتحقق من امكانية التبرع",
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 16,
@@ -84,25 +84,25 @@ class _DonationEligibilityScreenState extends State<DonationEligibilityScreen> {
               children: [
                 const SizedBox(height: 20),
                 buildSwitchTile(
-                  title: "Are you feeling healthy today?",
+                  title: "هل تشعر بصحة جيدة",
                   icon: Icons.favorite,
                   value: isHealthy,
                   onChanged: (val) => setState(() => isHealthy = val),
                 ),
                 buildSwitchTile(
-                  title: "Have you donated blood in the last 3 months?",
+                  title: "هل قمت بالتبرع بالدم في الثلاثة الشهور السابقة؟",
                   icon: Icons.bloodtype,
                   value: donatedRecently,
                   onChanged: (val) => setState(() => donatedRecently = val),
                 ),
                 buildSwitchTile(
-                  title: "Have you recently traveled abroad?",
+                  title: "هل قمت بالسفر مؤخرا؟",
                   icon: Icons.flight,
                   value: traveledAbroad,
                   onChanged: (val) => setState(() => traveledAbroad = val),
                 ),
                 buildSwitchTile(
-                  title: "Are you currently on medication?",
+                  title: "هل انت الان تتعاطى اي نوع من الادوية؟",
                   icon: Icons.medication,
                   value: onMedication,
                   onChanged: (val) => setState(() => onMedication = val),
@@ -125,7 +125,7 @@ class _DonationEligibilityScreenState extends State<DonationEligibilityScreen> {
                   ),
                 ),
                 label: const Text(
-                  "Continue to Confirmation",
+                  "أكمل الي التأكد",
                   style: TextStyle(fontSize: 16),
                 ),
               ),

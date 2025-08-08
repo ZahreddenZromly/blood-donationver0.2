@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import 'auth_gate.dart';
 
 class AuthService extends ChangeNotifier {
   // instance of auth
@@ -15,14 +16,28 @@ class AuthService extends ChangeNotifier {
   Future<UserCredential> signInWithEmailandPassword(
       String email, String password) async {
     try {
-      UserCredential userCredential = await _firebaseAuth
+      final userCredential = await _firebaseAuth
           .signInWithEmailAndPassword(email: email, password: password);
+
+      final uid = userCredential.user!.uid;
+      final doc = await _firestore.collection('users').doc(uid).get();
+
+      final isActive = (doc.data()?['isActive'] ?? true) == true;
+      if (!doc.exists || !isActive) {
+        await _firebaseAuth.signOut();
+        throw InactiveAccountException();
+      }
 
       return userCredential;
     } on FirebaseAuthException catch (e) {
       throw Exception(e.code);
+    } on InactiveAccountException {
+      rethrow; // let UI show a nice message
+    } catch (e) {
+      throw Exception(e.toString());
     }
   }
+
 
   // sign up
   Future<UserCredential> signUpWithEmailandPassword(
@@ -37,12 +52,13 @@ class AuthService extends ChangeNotifier {
       await _firestore.collection('users').doc(userCredential.user!.uid).set({
         'uid': userCredential.user!.uid,
         'email': email,
+        'role': 'user',
+        'isActive': true, // ✅ مفعّل افتراضيًا
+        'createdAt': FieldValue.serverTimestamp(),
       });
 
-      // No SignOut here ❌
-
-      // After signup, go to profile page to complete information
-      Navigator.pushReplacementNamed(context,'/user_info'); // 👈 direct to profile page
+      // بعد التسجيل -> يذهب لملف التعريف لاستكمال البيانات
+      Navigator.pushReplacementNamed(context, '/user_info');
 
       return userCredential;
     } on FirebaseAuthException catch (e) {
@@ -50,10 +66,9 @@ class AuthService extends ChangeNotifier {
     }
   }
 
-
   // sign out
   Future<void> SignOut() async {
-    return await FirebaseAuth.instance.signOut();
+    return await _firebaseAuth.signOut();
   }
 
   // get user role
@@ -64,11 +79,10 @@ class AuthService extends ChangeNotifier {
         DocumentSnapshot userDoc =
         await _firestore.collection('users').doc(user.uid).get();
         if (userDoc.exists) {
-          // Retrieve user role from Firestore document
           return userDoc.get('role');
         }
       }
-      return null; // User not found or user document doesn't exist
+      return null;
     } catch (e) {
       print("Error getting user role: $e");
       return null;

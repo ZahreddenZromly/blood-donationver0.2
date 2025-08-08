@@ -15,7 +15,9 @@ class AuthGate extends StatelessWidget {
       final doc = await FirebaseFirestore.instance.collection('users').doc(uid).get();
       if (!doc.exists || doc.data() == null) return false;
       final data = doc.data()!;
-      return data.containsKey('name') && data.containsKey('age') && data.containsKey('bloodType');
+      return data.containsKey('name') &&
+          data.containsKey('age') &&
+          data.containsKey('bloodType');
     } catch (e) {
       print('❌ Error checking profile data: $e');
       return false;
@@ -53,13 +55,15 @@ class AuthGate extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           }
 
+          // غير مسجل -> صفحة الدخول/التسجيل
           if (!snapshot.hasData || snapshot.data == null) {
             return const LoginOrRegister();
           }
 
           final user = snapshot.data!;
 
-          return FutureBuilder<DocumentSnapshot>(
+          // بعد ما يسجّل الدخول، افحص وثيقته في Firestore
+          return FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
             future: FirebaseFirestore.instance.collection('users').doc(user.uid).get(),
             builder: (context, userSnapshot) {
               if (userSnapshot.connectionState == ConnectionState.waiting) {
@@ -67,31 +71,36 @@ class AuthGate extends StatelessWidget {
               }
 
               if (!userSnapshot.hasData || !userSnapshot.data!.exists) {
+                // ما عنده وثيقة بيانات -> رجّعه للتسجيل
+                FirebaseAuth.instance.signOut();
                 return const LoginOrRegister();
               }
 
-              final userData = userSnapshot.data!.data() as Map<String, dynamic>?;
-
+              final userData = userSnapshot.data!.data();
               if (userData == null) {
+                FirebaseAuth.instance.signOut();
                 return const LoginOrRegister();
               }
 
-              // 🚫 Check if the account is deactivated
-              if (userData['isActive'] == false) {
+              // 🚫 منع الدخول إن كان غير مفعّل
+              final isActive = (userData['isActive'] ?? true) == true;
+              if (!isActive) {
                 FirebaseAuth.instance.signOut();
                 return const DeactivatedAccountScreen();
               }
 
-              // ✅ Save FCM token
+              // ✅ خزّن توكن الإشعارات
               saveFCMToken(user.uid);
 
               final role = userData['role'];
               final isSuperAdmin = user.email == 'superadmin@gmail.com';
 
+              // لوحة تحكم الأدمن
               if (role == 'admin' || isSuperAdmin) {
                 return const NavBar();
               }
 
+              // المستخدم العادي -> هل أكمل بياناته؟
               return FutureBuilder<bool>(
                 future: hasProfileData(user.uid),
                 builder: (context, profileSnapshot) {
@@ -160,4 +169,12 @@ class DeactivatedAccountScreen extends StatelessWidget {
       ),
     );
   }
+
+}
+
+class InactiveAccountException implements Exception {
+  final String message;
+  InactiveAccountException([this.message = 'Your account is inactive right now. Please contact the admin.']);
+  @override
+  String toString() => message;
 }

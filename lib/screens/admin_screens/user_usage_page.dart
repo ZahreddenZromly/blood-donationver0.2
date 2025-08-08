@@ -5,103 +5,80 @@ class UserUsagePage extends StatefulWidget {
   const UserUsagePage({super.key});
 
   @override
-  _UserUsagePageState createState() => _UserUsagePageState();
+  State<UserUsagePage> createState() => _UserUsagePageState();
 }
 
 class _UserUsagePageState extends State<UserUsagePage> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  TextEditingController _searchController = TextEditingController();
-  List<DocumentSnapshot> allUsers = [];
-  List<DocumentSnapshot> filteredUsers = [];
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
 
   @override
-  void initState() {
-    super.initState();
-    _loadUsers();
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
-  Future<void> _loadUsers() async {
+  Future<void> _toggleStatus(DocumentSnapshot<Map<String, dynamic>> doc) async {
     try {
-      final querySnapshot = await _firestore.collection('users').get();
-      setState(() {
-        allUsers = querySnapshot.docs;
-        filteredUsers = List.from(allUsers); // Initially show all users
+      final data = doc.data() ?? {};
+      // Read current status: prefer bool isActive, fallback to status string
+      final bool isActiveNow =
+          (data['isActive'] ?? (data['status'] == 'Active')) == true;
+
+      await _firestore.collection('users').doc(doc.id).update({
+        'isActive': !isActiveNow,
       });
+
+      // If you ALSO want to keep the old string field in sync, uncomment:
+      // await _firestore.collection('users').doc(doc.id).update({
+      //   'isActive': !isActiveNow,
+      //   'status': !isActiveNow ? 'Active' : 'Inactive',
+      // });
     } catch (e) {
-      print("Error fetching users: $e");
+      debugPrint("Error updating status: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to update user status')),
+      );
     }
   }
 
-  void _filterUsers() {
-    String query = _searchController.text.toLowerCase();
-    setState(() {
-      filteredUsers =
-          allUsers.where((user) {
-            final name =
-                user.data().toString().contains('name')
-                    ? user['name'].toLowerCase()
-                    : '';
-            return name.contains(query);
-          }).toList();
-    });
-  }
+  void _showUserDetails(DocumentSnapshot<Map<String, dynamic>> doc) {
+    final data = doc.data() ?? {};
+    final name = (data['name'] ?? 'Unnamed').toString();
+    final role = (data['role'] ?? 'Not specified').toString();
+    final bool isActive =
+        (data['isActive'] ?? (data['status'] == 'Active')) == true;
+    final statusText = isActive ? 'Active' : 'Inactive';
 
-  void _toggleStatus(int index) {
-    final user = filteredUsers[index];
-    final currentStatus =
-        user.data().toString().contains('status') ? user['status'] : 'Inactive';
-    final newStatus = currentStatus == 'Active' ? 'Inactive' : 'Active';
-
-    _firestore
-        .collection('users')
-        .doc(user.id)
-        .update({'status': newStatus})
-        .then((_) {
-          _loadUsers(); // Reload users to reflect the change
-        })
-        .catchError((e) {
-          print("Error updating status: $e");
-        });
-  }
-
-  void _showUserDetails(DocumentSnapshot user) {
-    final name =
-        user.data().toString().contains('name') ? user['name'] : 'Unnamed';
-    final role =
-        user.data().toString().contains('role')
-            ? user['role']
-            : 'Not specified';
-    final status =
-        user.data().toString().contains('status') ? user['status'] : 'Unknown';
-    final lastLogin =
-        user.data().toString().contains('lastLogin')
-            ? user['lastLogin']
-            : 'No login data';
+    String lastLoginText = 'No login data';
+    final lastLogin = data['lastLogin'];
+    if (lastLogin is Timestamp) {
+      lastLoginText = lastLogin.toDate().toString();
+    } else if (lastLogin != null) {
+      lastLoginText = lastLogin.toString();
+    }
 
     showDialog(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(name),
-          content: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('Role: $role'),
-              Text('Last Login: $lastLogin'),
-              Text('Status: $status'),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('اغلاق'),
-            ),
+      builder: (_) => AlertDialog(
+        title: Text(name),
+        content: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('Role: $role'),
+            Text('Last Login: $lastLoginText'),
+            Text('Status: $statusText'),
           ],
-        );
-      },
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Close'),
+          ),
+        ],
+      ),
     );
   }
 
@@ -109,29 +86,29 @@ class _UserUsagePageState extends State<UserUsagePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(
-          child: const Text(
-            'استعمال المستخدم',
+        title: const Center(
+          child: Text(
+            'User Management',
             style: TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
-              fontSize: 36,
+              fontSize: 26,
             ),
           ),
         ),
-        centerTitle: true,
         backgroundColor: Colors.redAccent,
+        centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Search
             TextField(
               controller: _searchController,
-              onChanged: (value) => _filterUsers(),
+              onChanged: (v) => setState(() => _searchQuery = v.toLowerCase()),
               decoration: InputDecoration(
-                labelText: 'البحث',
+                labelText: 'Search by name',
                 prefixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
@@ -139,61 +116,81 @@ class _UserUsagePageState extends State<UserUsagePage> {
               ),
             ),
             const SizedBox(height: 20),
+            // Users list
             Expanded(
-              child:
-                  filteredUsers.isEmpty
-                      ? const Center(child: Text("لا يوجد مستخدمين"))
-                      : ListView.builder(
-                        itemCount: filteredUsers.length,
-                        itemBuilder: (context, index) {
-                          final user = filteredUsers[index];
-                          final name =
-                              user.data().toString().contains('name')
-                                  ? user['name']
-                                  : 'Unnamed';
-                          final status =
-                              user.data().toString().contains('status')
-                                  ? user['status']
-                                  : 'Unknown';
+              child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                stream: _firestore.collection('users').snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return const Center(child: Text('Error loading users'));
+                  }
+                  if (!snapshot.hasData) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
 
-                          return Card(
-                            elevation: 5,
-                            margin: const EdgeInsets.symmetric(vertical: 8),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: ListTile(
-                              leading: const Icon(
-                                Icons.person,
-                                color: Colors.teal,
+                  // Get and (optionally) sort locally by name to avoid Firestore index issues
+                  final docs = snapshot.data!.docs.toList()
+                    ..sort((a, b) {
+                      final aName =
+                      (a.data()['name'] ?? '').toString().toLowerCase();
+                      final bName =
+                      (b.data()['name'] ?? '').toString().toLowerCase();
+                      return aName.compareTo(bName);
+                    });
+
+                  // Filter by search
+                  final filtered = docs.where((d) {
+                    final name =
+                    (d.data()['name'] ?? '').toString().toLowerCase();
+                    return name.contains(_searchQuery);
+                  }).toList();
+
+                  if (filtered.isEmpty) {
+                    return const Center(child: Text('No users found'));
+                  }
+
+                  return ListView.builder(
+                    itemCount: filtered.length,
+                    itemBuilder: (context, index) {
+                      final doc = filtered[index];
+                      final data = doc.data();
+                      final name = (data['name'] ?? 'Unnamed').toString();
+                      final bool isActive =
+                          (data['isActive'] ?? (data['status'] == 'Active')) ==
+                              true;
+
+                      return Card(
+                        elevation: 5,
+                        margin: const EdgeInsets.symmetric(vertical: 6),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: ListTile(
+                          leading:
+                          const Icon(Icons.person, color: Colors.teal),
+                          title: Text(name),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                isActive ? 'Active' : 'Inactive',
+                                style: TextStyle(
+                                  color: isActive ? Colors.green : Colors.red,
+                                ),
                               ),
-                              title: Text(name),
-                              trailing: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    status,
-                                    style: TextStyle(
-                                      color:
-                                          status == 'Active'
-                                              ? Colors.green
-                                              : Colors.red,
-                                    ),
-                                  ),
-                                  IconButton(
-                                    icon: const Icon(
-                                      Icons.toggle_on,
-                                      color: Colors.teal,
-                                    ),
-                                    onPressed: () => _toggleStatus(index),
-                                  ),
-                                ],
+                              Switch(
+                                value: isActive,
+                                onChanged: (_) => _toggleStatus(doc),
                               ),
-                              onTap: () => _showUserDetails(user),
-                            ),
-                          );
-                        },
-                      ),
+                            ],
+                          ),
+                          onTap: () => _showUserDetails(doc),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
             ),
           ],
         ),

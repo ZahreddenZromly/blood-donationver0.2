@@ -80,14 +80,14 @@ class _DonationStatusScreenState extends State<DonationStatusScreen> {
     // If no donation exists, show message
     if (latestDonation == null) {
       return const Scaffold(
-        body: Center(child: Text("No donation request found.")),
+        body: Center(child: Text("لا يوجد طلب التبرع")),
       );
     }
 
     final status = latestDonation!['status'];
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Donation Status")),
+      appBar: AppBar(title: const Text("حالة الطلب")),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
@@ -100,7 +100,7 @@ class _DonationStatusScreenState extends State<DonationStatusScreen> {
               ElevatedButton.icon(
                 onPressed: cancelRequest,
                 icon: const Icon(Icons.cancel),
-                label: const Text("Cancel Request"),
+                label: const Text("الغاء الطلب"),
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
               ),
           ],

@@ -1,5 +1,6 @@
 import 'package:blood_donation/screens/phone_list_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'MapScreen.dart';
 import 'location_notify.dart'; // Update the path based on your project
@@ -12,6 +13,16 @@ class Booking extends StatefulWidget {
 }
 
 class _BookingState extends State<Booking> {
+  final Uri facebookUrl = Uri.parse('https://www.facebook.com/share/18n5ht1py9/?mibextid=wwXIfr');
+
+  void _launchFacebook() async {
+    if (!await launchUrl(facebookUrl, mode: LaunchMode.externalApplication)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Could not open Facebook page')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,14 +98,29 @@ class _BookingState extends State<Booking> {
                 ),
               ),
               const SizedBox(height: 50),
-              const Text(
-                "Can I Give Blood?",
-                style: TextStyle(color: Colors.redAccent, fontSize: 18),
-              ),
-              const SizedBox(height: 10),
-              const Text(
-                "Share On Social Media",
-                style: TextStyle(color: Colors.redAccent, fontSize: 18),
+              // Clickable Facebook link with icon
+              InkWell(
+                onTap: _launchFacebook,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Icon(
+                      Icons.facebook,
+                      color: Colors.blue,
+                      size: 24,
+                    ),
+                    SizedBox(width: 8),
+                    Text(
+                      "صفحة التواصل الاجتماعي",
+                      style: TextStyle(
+                        color: Colors.redAccent,
+                        fontSize: 18,
+                        decoration: TextDecoration.underline, // to show it's clickable
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -121,7 +147,6 @@ class _BookingState extends State<Booking> {
   }
 
   void _openMap() {
-    // This opens the internal MapScreen now
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const MapScreen()),
