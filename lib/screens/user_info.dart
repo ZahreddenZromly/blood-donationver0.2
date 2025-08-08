@@ -19,6 +19,7 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
 
   String? _selectedBloodType;
   String? _selectedCity;
+  String? _selectedGender;
 
   final List<String> _bloodTypes = [
     'A+',
@@ -40,6 +41,11 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
     'الزاوية',
   ];
 
+  final List<String> _genders = [
+    'ذكر', // Male
+    'انثى', // Female
+  ];
+
   Future<void> _saveProfile() async {
     if (_formKey.currentState!.validate()) {
       final uid = FirebaseAuth.instance.currentUser!.uid;
@@ -50,6 +56,7 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
         'city': _selectedCity,
         'phone': _phoneController.text.trim(),
         'nationalNum': _nationalNumController.text.trim(),
+        'gender': _selectedGender,
       }, SetOptions(merge: true));
 
       Navigator.pushReplacement(
@@ -73,7 +80,6 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
                 // 🔥 Top Section with Icon and Text
                 Column(
                   children: [
-
                     Container(
                       decoration: const BoxDecoration(
                         color: Colors.redAccent,
@@ -86,15 +92,15 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
                       width: double.infinity,
                       child: Padding(
                         padding: const EdgeInsets.only(top: 60.0),
-                        child:  Icon(
+                        child: Icon(
                           Icons.medical_information,
                           size: 80,
                           color: Colors.white,
                         ),
                       ),
                     ),
-                    SizedBox(height: 10),
-                    Text(
+                    const SizedBox(height: 10),
+                    const Text(
                       "الرجاء ادخال بياناتك",
                       style: TextStyle(
                         fontSize: 22,
@@ -102,36 +108,6 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
                         color: Colors.white,
                       ),
                     ),
-                    /*
-                    Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: Colors.redAccent,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      height: 350,
-                      width: double.infinity,
-                      child: Column(
-                        children: const [
-                          Icon(
-                            Icons.medical_information,
-                            size: 80,
-                            color: Colors.white,
-                          ),
-                          SizedBox(height: 10),
-                          Text(
-                            "Please Add Your Information",
-                            style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                     */
                     const SizedBox(height: 30),
                   ],
                 ),
@@ -141,10 +117,51 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
                 const SizedBox(height: 16),
                 _buildTextField(_ageController, "العمر", TextInputType.number),
                 const SizedBox(height: 16),
-                _buildTextField(_phoneController, "رقم الهاتف", TextInputType.phone),
+
+                _buildDropdownGender(),
                 const SizedBox(height: 16),
-                _buildTextField(_nationalNumController, "الرقم الوطني", TextInputType.number),
+
+                _buildTextField(
+                  _phoneController,
+                  "رقم الهاتف",
+                  TextInputType.phone,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "ادخل رقم الهاتف";
+                    }
+                    if (value.length != 10) {
+                      return "رقم الهاتف يجب ان يكون 10 أرقام";
+                    }
+                    if (!(value.startsWith('091') || value.startsWith('092'))) {
+                      return "رقم الهاتف يجب أن يبدأ بـ 091 أو 092";
+                    }
+                    if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
+                      return "رقم الهاتف يجب أن يحتوي أرقام فقط";
+                    }
+                    return null;
+                  },
+                ),
                 const SizedBox(height: 16),
+
+                _buildTextField(
+                  _nationalNumController,
+                  "الرقم الوطني",
+                  TextInputType.number,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "ادخل الرقم الوطني";
+                    }
+                    if (value.length != 13) {
+                      return "الرقم الوطني يجب أن يكون 13 رقمًا";
+                    }
+                    if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
+                      return "الرقم الوطني يجب أن يحتوي أرقام فقط";
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+
                 _buildDropdownBloodType(),
                 const SizedBox(height: 16),
                 _buildDropdownCity(),
@@ -176,7 +193,9 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
     );
   }
 
-  Widget _buildTextField(TextEditingController controller, String label, TextInputType type) {
+  Widget _buildTextField(
+      TextEditingController controller, String label, TextInputType type,
+      {String? Function(String?)? validator}) {
     return TextFormField(
       controller: controller,
       keyboardType: type,
@@ -186,7 +205,7 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
           borderRadius: BorderRadius.circular(12),
         ),
       ),
-      validator: (value) => value!.isEmpty ? "Enter your $label" : null,
+      validator: validator ?? (value) => value!.isEmpty ? "ادخل $label" : null,
     );
   }
 
@@ -210,7 +229,6 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
     );
   }
 
-
   Widget _buildDropdownCity() {
     return DropdownButtonFormField<String>(
       value: _selectedCity,
@@ -231,9 +249,23 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
     );
   }
 
-
-
+  Widget _buildDropdownGender() {
+    return DropdownButtonFormField<String>(
+      value: _selectedGender,
+      hint: const Text("اختر الجنس"),
+      onChanged: (val) => setState(() => _selectedGender = val),
+      items: _genders
+          .map((gender) => DropdownMenuItem(
+        value: gender,
+        child: Text(gender),
+      ))
+          .toList(),
+      decoration: InputDecoration(
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
+      validator: (value) => value == null ? "اختر الجنس" : null,
+    );
+  }
 }
-
-
-

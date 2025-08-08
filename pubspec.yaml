@@ -3,19 +3,14 @@ description: "A new Flutter project."
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-
 version: 1.0.0+1
 
 environment:
   sdk: ^3.7.2
 
-
 dependencies:
   flutter:
     sdk: flutter
-
-
-
 
   google_maps_flutter: ^2.5.0
   geolocator: ^10.1.0
@@ -42,17 +37,15 @@ dependencies:
   flutter_polyline_points: ^2.0.0
   flutter_map_cancellable_tile_provider: ^2.0.0
 
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-
   flutter_lints: ^5.0.0
 
+  flutter_launcher_icons: ^0.13.1   # <-- Add this line here
 
 flutter:
-
 
   assets:
     - assets/splash.png
@@ -62,7 +55,10 @@ flutter:
     - assets/blood_login.png
     - assets/placeholder.jpg
 
-
   uses-material-design: true
 
-
+flutter_icons:                # <-- Add this section for launcher icons
+  android: true
+  ios: true
+  web: true
+  image_path: "assets/blood-donation.png"

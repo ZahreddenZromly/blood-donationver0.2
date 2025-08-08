@@ -48,8 +48,8 @@ class AdminDonationRequestsScreen extends StatelessWidget {
               // 2. Create a notification for the user
               await FirebaseFirestore.instance.collection('notifications').add({
                 'userId': userId,
-                'title': 'Donation Request Cancelled',
-                'message': 'Your donation request was cancelled because: $reason',
+                'title': 'لم يتم قبلو طلبك',
+                'message': 'طلب التبرع الخاص بك تم رفضه بسبب: $reason',
                 'timestamp': Timestamp.now(),
                 'read': false,
               });
@@ -79,8 +79,8 @@ class AdminDonationRequestsScreen extends StatelessWidget {
       // 2. Create a notification for the user
       await FirebaseFirestore.instance.collection('notifications').add({
         'userId': userId,
-        'title': 'Donation Request Approved',
-        'message': 'Your donation request has been approved! The center will contact you soon.',
+        'title': 'تم قبول طلب التبرع',
+        'message': 'الطلب الدي مت به للتبرع تم قبوله وسوف يتم التواصل معك قريبا',
         'timestamp': Timestamp.now(),
         'read': false,
       });
